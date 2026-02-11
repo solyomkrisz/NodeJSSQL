@@ -1,0 +1,12 @@
+###
+GET http://127.0.0.1:3000/api/selectall
+
+###
+POST http://127.0.0.1:3000/api/insertinto
+content-type: application/json
+
+{
+    "nev": "Pizza",
+    "ar": 7002,
+    "finom": "Nagyoon finóm!"
+}

@@ -41,4 +41,43 @@ router.get('/testsql', async (request, response) => {
     }
 });
 
+router.post('/insertinto', async (request, response) => {
+    const body = request.body;
+
+    try {
+        const insertinto = await database.insertinto(body.nev, body.ar, body.finom);
+        response.status(200).json({
+            message: 'Ez a végpont működik',
+            insertId: insertinto
+        });
+    } catch (error) {
+        response.status(500).json({
+            message: 'Ez a végpont nem működik'
+        });
+    }
+});
+
+router.get('/atlagAr', async (request, response) => {
+    try {
+        const result = await database.atlagAr();
+        response.status(200).json({
+            result
+        });
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ message: 'Hiba történt.' });
+    }
+});
+
+router.get('/kaja/:nev', async (request, response) => {
+    const nev = request.params.nev;
+    try {
+        const result = await database.kajaAdatLekerdezes(nev);
+        response.status(200).json({ result });
+    } catch (error) {
+        console.error(error);
+        response.status(200).json({ message: 'Hiba történt.' });
+    }
+});
+
 module.exports = router;

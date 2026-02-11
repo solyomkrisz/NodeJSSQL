@@ -16,7 +16,36 @@ async function selectall() {
     const [rows] = await pool.execute(query);
     return rows;
 }
+async function insertinto(nev, ar, finom) {
+    const query = 'INSERT INTO kaja(nev, ar, finom) VALUES(?, ?, ?);';
+    try {
+        const [rows] = await pool.execute(query, [nev, ar, finom]);
+        return rows.insertId;
+    } catch (error) {
+        if (error.code === 'ER_DUP_ENTRY') {
+            throw new Error('Az étel neve vagy finomsága már létezik az adatbázisban.');
+        }
+        throw error;
+    }
+}
+
+//*Feladat: Készítsen egy sql lekérdezést, amely megadja az ételek átlag árát. A lekérdezéshez készítsen meghívható végpontot is, emellett API tesztet a REST Client segítségével.
+async function atlagAr() {
+    const query = 'SELECT AVG(ar) FROM kaja;';
+    const [result] = await pool.execute(query);
+    return result ?? null;
+}
+
+//*Feladat: Készítsen SQL lekérdezést, amely segítségével egy paraméterként kapott név alapján kiírja a kajához tartozó összes adatot. A lekérdezéshez készítsen meghívható végpontot is, emellett API tesztet a REST Client segítségével.
+async function kajaAdatLekerdezes(nev) {
+    const query = 'SELECT * FROM kaja WHERE nev = ?;';
+    const [rows] = await pool.execute(query, [nev]);
+    return rows[0] ?? null;
+}
+
 //!Export
 module.exports = {
-    selectall
+    selectall,
+    kajaAdatLekerdezes,
+    atlagAr
 };
