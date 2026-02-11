@@ -80,4 +80,31 @@ router.get('/kaja/:nev', async (request, response) => {
     }
 });
 
+/**feladat 01 */
+router.get('/categories', async (request, response) => {
+    try {
+        const result = await database.osszesKategoriaListazasa();
+        response.status(200).json({ result });
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ message: 'Hipa' });
+    }
+});
+
+router.post('/categories', async (request, response) => {
+    const { name } = request.body;
+
+    if (!name) {
+        response.status(400).json({ message: 'huibjás body' });
+    }
+
+    try {
+        await database.kategoriaHozzaadasa(name);
+        response.status(201).json({ message: 'sikeres hozzáadás' });
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ message: 'hiba történt' });
+    }
+});
+
 module.exports = router;

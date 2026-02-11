@@ -43,9 +43,22 @@ async function kajaAdatLekerdezes(nev) {
     return rows[0] ?? null;
 }
 
+async function osszesKategoriaListazasa() {
+    const query = 'SELECT name FROM categories;';
+    const [rows] = await pool.execute(query);
+    return rows;
+}
+
+async function kategoriaHozzaadasa(name) {
+    const query = 'INSERT INTO categories(name) VALUES(?);';
+    const [result] = await pool.execute(query, [name]);
+    return result;
+}
+
 //!Export
 module.exports = {
     selectall,
     kajaAdatLekerdezes,
-    atlagAr
+    atlagAr,
+    osszesKategoriaListazasa
 };
