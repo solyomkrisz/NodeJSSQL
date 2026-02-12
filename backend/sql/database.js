@@ -43,6 +43,7 @@ async function kajaAdatLekerdezes(nev) {
     return rows[0] ?? null;
 }
 
+// 1. feladat
 async function osszesKategoriaListazasa() {
     const query = 'SELECT name FROM categories;';
     const [rows] = await pool.execute(query);
@@ -55,10 +56,47 @@ async function kategoriaHozzaadasa(name) {
     return result;
 }
 
+async function kategoriaModositas(id, ujnev) {
+    const query = 'UPDATE categories SET name = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [ujnev, id]);
+    return result;
+}
+
+async function kategoriaTorles(id) {
+    const query = 'DELETE FROM categories WHERE id = ?';
+    const [result] = await pool.execute(query, [id]);
+    return result;
+}
+
+// 2. feladat
+async function selectusers() {
+    const query = 'SELECT * FROM users';
+    const [rows] = await pool.execute(query);
+    return rows;
+}
+
+async function adduser(name, email) {
+    const query = 'INSERT INTO users(name, email) VALUES(?, ?)';
+    const [result] = await pool.execute(query, [name, email]);
+    return result;
+}
+
+async function updateuser(id, name, email) {
+    const query = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [name, email, id]);
+    return result;
+}
+
 //!Export
 module.exports = {
     selectall,
     kajaAdatLekerdezes,
     atlagAr,
-    osszesKategoriaListazasa
+    osszesKategoriaListazasa,
+    kategoriaHozzaadasa,
+    kategoriaModositas,
+    kategoriaTorles,
+    selectusers,
+    adduser,
+    updateuser
 };
