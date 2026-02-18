@@ -87,6 +87,7 @@ async function updateuser(id, name, email) {
     return result;
 }
 
+// 3. feladat
 async function osszestermekleker() {
     const query = 'SELECT * FROM products';
     const [rows] = await pool.execute(query);
