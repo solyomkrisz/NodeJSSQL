@@ -4,7 +4,7 @@ const pool = mysql.createPool({
     host: '127.0.0.1',
     user: 'root',
     password: '',
-    database: 'exampledb',
+    database: 'nodejssql',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -87,6 +87,122 @@ async function updateuser(id, name, email) {
     return result;
 }
 
+async function osszestermekleker() {
+    const query = 'SELECT * FROM products';
+    const [rows] = await pool.execute(query);
+    return rows;
+}
+
+async function termekhozzaad(request) {
+    const { name, price, stock } = request.body;
+    const query = 'INSERT INTO products(name, price, stock) VALUES(?, ?, ?)';
+    const [result] = await pool.execute(query, [name, price, stock]);
+    return result;
+}
+
+async function termekmodositas(request) {
+    const allowedFields = ['name', 'price', 'stock'];
+    const fields = Object.keys(request.body);
+    let query = 'UPDATE products SET ';
+    const values = [];
+
+    for (const field of fields) {
+        if (!allowedFields.includes(field)) {
+            continue;
+        }
+
+        query += `${field} = ?, `;
+        values.push(request.body[field]);
+    }
+
+    query = query.slice(0, -2);
+    query += ' WHERE id = ?';
+    values.push(request.params.id);
+
+    const [result] = await pool.execute(query, values);
+    return result;
+}
+
+async function termektorles(request) {
+    const query = 'DELETE FROM products WHERE id = ?';
+    const [result] = await pool.execute(query, [request.params.id]);
+    return result;
+}
+
+async function osszeskeszletrekord() {
+    const query = 'SELECT * FROM inventory';
+    const [rows] = await pool.execute(query);
+    return rows;
+}
+
+async function keszletrekordhozzaadasa(request) {
+    const { product_id, quantity } = request.body;
+    const query = 'INSERT INTO inventory(product_id, quantity) VALUES(?,?)';
+    const [result] = await pool.execute(query, [product_id, quantity]);
+    return result;
+}
+
+async function updateinventory(request) {
+    const allowedFields = ['product_id', 'quantity'];
+    const fields = Object.keys(request.body);
+    let query = 'UPDATE inventory SET ';
+    const values = [];
+
+    for (const field of fields) {
+        if (!allowedFields.includes(field)) {
+            continue;
+        }
+
+        query += `${field} = ?, `;
+        values.push(request.body[field]);
+    }
+
+    query = query.slice(0, -2);
+    query += ' WHERE id = ?';
+    values.push(request.params.id);
+    const [result] = await pool.execute(query, values);
+    return result;
+}
+
+async function deleteinventory(request) {
+    const query = 'DELETE FROM inventory WHERE id = ?';
+    const [result] = await pool.execute(query, [request.params.id]);
+    return result;
+}
+
+async function osszesugyfellekeres() {
+    const query = 'SELECT * FROM customers';
+    const [rows] = await pool.execute(query);
+    return rows;
+}
+
+async function ugyfelhozzaad(request) {
+    const { name, email } = request.body;
+    const query = 'INSERT INTO customers (name, emai) VALUES(?, ?)';
+    const [result] = await pool.execute(query, [name, email]);
+    return result;
+}
+
+async function rendeleseklekerese(request) {
+    const query =
+        'SELECT * FROM orders INNER JOIN customers ON orders.customer_id = customers.id WHERE customers.id = ?';
+    const [rows] = await pool.execute(query, [request.params.id]);
+    return rows;
+}
+
+async function rendeleshozzaad(request) {
+    const { customer_id, product, quantity } = request.body;
+    const query = 'INSERT INTO orders (customer_id, product, quantity) VALUES (?, ?, ?)';
+    const [result] = await pool.execute(query, [customer_id, product, quantity]);
+    return result;
+}
+
+async function rendelestorles(request) {
+    const query = 'DELETE FROM orders WHERE id = ?';
+    const [result] = await pool.execute(query, [request.params.id]);
+    return result;
+}
+
 //!Export
 module.exports = {
     selectall,
@@ -98,5 +214,18 @@ module.exports = {
     kategoriaTorles,
     selectusers,
     adduser,
-    updateuser
+    updateuser,
+    osszestermekleker,
+    termekhozzaad,
+    termekmodositas,
+    termektorles,
+    osszeskeszletrekord,
+    keszletrekordhozzaadasa,
+    updateinventory,
+    deleteinventory,
+    osszesugyfellekeres,
+    ugyfelhozzaad,
+    rendeleseklekerese,
+    rendeleshozzaad,
+    rendelestorles
 };

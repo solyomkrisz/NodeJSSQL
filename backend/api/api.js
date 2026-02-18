@@ -148,7 +148,7 @@ router.post('/deletecategories/:id', async (request, response) => {
     }
 });
 
-// 3. feladat
+// 2. feladat
 router.get('/users', async (request, response) => {
     try {
         const result = await database.selectusers();
@@ -182,6 +182,163 @@ router.post('/updateusers/:id', async (request, response) => {
     } catch (error) {
         console.error(error);
         response.status(500).json({ messgae: error.message });
+    }
+});
+
+// 3. feladat
+router.get('/products', async (request, response) => {
+    try {
+        const result = await database.osszestermekleker();
+        response.status(200).json({ result });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: error.message });
+    }
+});
+
+router.post('/products', async (request, response) => {
+    try {
+        await database.termekhozzaad(request);
+        response.status(200).json({ result: 'Siker' });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: error.message });
+    }
+});
+
+router.post('/updateproducts/:id', async (request, response) => {
+    try {
+        const result = await database.termekmodositas(request);
+        if (result.affectedRows > 0) {
+            return response.status(200).json({ message: 'Sikeres módosítás' });
+        }
+
+        response.status(404).json({ message: 'Termék nem található' });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: error.message });
+    }
+});
+
+router.post('/deleteproducts/:id', async (request, response) => {
+    try {
+        const result = await database.termektorles(request);
+
+        if (result.affectedRows > 0) {
+            return response.status(200).json({ result: 'Sikeres törlés' });
+        }
+        response.status(404).json({ message: 'Termek nem található' });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+// 4. feladat
+router.get('/inventory', async (request, response) => {
+    try {
+        const result = await database.osszeskeszletrekord();
+
+        response.status(200).json({ result });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: error.message });
+    }
+});
+
+router.post('/inventory', async (request, response) => {
+    try {
+        await database.keszletrekordhozzaadasa(request);
+        response.status(200).json({ message: 'Sikeres hozzáadás' });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ mesage: 'valami nem sikerült' });
+    }
+});
+
+router.post('/updateinventory/:id', async (request, response) => {
+    try {
+        const result = await database.updateinventory(request);
+
+        if (result.affectedRows > 0) {
+            return response.status(200).json({ message: 'Sikeres frissítés' });
+        }
+
+        response.status(404).json({ message: 'Nem található id' });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: 'Valami nem ment' });
+    }
+});
+
+router.post('/deleteinventory/:id', async (request, response) => {
+    try {
+        const result = await database.deleteinventory(request);
+
+        if (result.affectedRows > 0) {
+            return response.status(200).json({ message: 'Sikeres törlés' });
+        }
+
+        response.status(404).json({ message: 'Az id nem található' });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: 'Nem sikerült a törlés' });
+    }
+});
+
+// 5. feladat
+router.get('/customers', async (request, response) => {
+    try {
+        const result = await database.osszesugyfellekeres();
+
+        response.status(200).json({ result });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: 'Valami nem ment' });
+    }
+});
+
+router.post('/insertcustomer', async (request, response) => {
+    try {
+        await database.ugyfelhozzaad(request);
+        response.status(200).json({ message: 'Sikeres hozzáadás' });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: 'Nem siker' });
+    }
+});
+
+router.get('/customers/:id/orders', async (request, response) => {
+    try {
+        const result = await database.rendeleseklekerese(request);
+        response.status(200).json({ result });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: 'Hiba történt' });
+    }
+});
+
+router.post('/insertorders', async (request, response) => {
+    try {
+        await database.rendeleshozzaad(request);
+        response.status(200).json({ message: 'Sikeres beszúrás' });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: 'Valami nem sikerült' });
+    }
+});
+
+router.post('/deleteorders/:id', async (request, response) => {
+    try {
+        const result = await database.rendelestorles(request);
+
+        if (result.affectedRows > 0) {
+            return response.status(200).json({ message: 'Sikeres törlés' });
+        }
+
+        response.status(404).json({ message: 'Nem talált rendelés' });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: 'Hiba' });
     }
 });
 
