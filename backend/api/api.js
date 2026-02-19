@@ -342,4 +342,65 @@ router.post('/deleteorders/:id', async (request, response) => {
     }
 });
 
+// SQL feladat 1.docx
+router.post('/ujdiak', async (request, response) => {
+    try {
+        const result = await database.ujdiak();
+        response.status(200).json({ result });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: 'Valami nem oké' });
+    }
+});
+
+router.get('/nevsor', async (request, response) => {
+    try {
+        const result = await database.nevsor();
+        response.status(200).json({ result });
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({ message: 'Valami nem oké' });
+    }
+});
+
+router.get('/letszamok', async (req, res) => {
+    try {
+        const result = await database.letszamok();
+        res.status(200).json({ result });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Valami nem oké' });
+    }
+});
+
+router.get('/angol', async (req, res) => {
+    try {
+        const result = await database.angol();
+        res.status(200).json({ result });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Valami nem oké' });
+    }
+});
+
+router.get('/felelos', async (req, res) => {
+    try {
+        const result = await database.felelos();
+        res.status(200).json({ result });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Valami nem oké' });
+    }
+});
+
+router.get('/tanar', async (req, res) => {
+    try {
+        const result = await database.tanar();
+        res.status(200).json({ result });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Valami nem oké' });
+    }
+});
+
 module.exports = router;

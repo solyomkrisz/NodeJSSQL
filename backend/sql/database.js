@@ -4,7 +4,8 @@ const pool = mysql.createPool({
     host: '127.0.0.1',
     user: 'root',
     password: '',
-    database: 'nodejssql',
+    // database: 'nodejssql',
+    database: 'erettsegi',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -204,6 +205,48 @@ async function rendelestorles(request) {
     return result;
 }
 
+// SQL feladat 1.docx
+async function ujdiak() {
+    const query =
+        'INSERT INTO vizsgazo(id, diaknev, evfolyam, osztaly) VALUES(0, "Kiss Andrea", 11, "C");';
+    const [result] = await pool.execute(query);
+    return result;
+}
+
+async function nevsor() {
+    const query =
+        "SELECT diaknev FROM vizsgazo WHERE evfolyam = 12 AND osztaly = 'D' ORDER BY diaknev DESC";
+    const [rows] = await pool.execute(query);
+    return rows;
+}
+
+async function letszamok() {
+    const query =
+        'SELECT osztaly, COUNT(*) AS "letszam" FROM vizsgazo WHERE evfolyam = 12 GROUP BY osztaly;';
+    const [rows] = await pool.execute(query);
+    return rows;
+}
+
+async function angol() {
+    const query =
+        'SELECT DISTINCT tanar.nev FROM tanar INNER JOIN vizsgak ON tanar.id = vizsgak.tanarid WHERE vizsgak.vizsgatargy LIKE "angol nyelv"';
+    const [rows] = await pool.execute(query);
+    return rows;
+}
+
+async function felelos() {
+    const query =
+        'SELECT vizsgazo.diaknev, COUNT(*) AS tantargyakdb FROM vizsgazo INNER JOIN vizsgak ON vizsgazo.id = vizsgak.vizsgazoid GROUP BY vizsgazo.diaknev';
+    const [rows] = await pool.execute(query);
+    return rows;
+}
+
+async function tanar() {
+    const query = 'UPDATE tanar SET nev = "Kovács Anna Linda" WHERE nev LIKE "Kovács Anna"';
+    const [result] = await pool.execute(query);
+    return result;
+}
+
 //!Export
 module.exports = {
     selectall,
@@ -228,5 +271,11 @@ module.exports = {
     ugyfelhozzaad,
     rendeleseklekerese,
     rendeleshozzaad,
-    rendelestorles
+    rendelestorles,
+    ujdiak,
+    nevsor,
+    letszamok,
+    angol,
+    felelos,
+    tanar
 };

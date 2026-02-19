@@ -2,11 +2,15 @@ CREATE DATABASE erettsegi
 DEFAULT CHARACTER SET utf8
 COLLATE utf8_hungarian_ci;
 
+USE erettsegi;
+
 CREATE TABLE vizsgazo(
     id INT PRIMARY KEY,
-    diaknev VARCHAR(60) UNIQUE,
+    diaknev VARCHAR(60),
     evfolyam INT,
-    osztaly VARCHAR(1)
+    osztaly VARCHAR(1),
+
+    UNIQUE(diaknev, evfolyam, osztaly)
 );
 
 CREATE TABLE tanar(
